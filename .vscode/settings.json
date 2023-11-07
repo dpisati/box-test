@@ -1,0 +1,12 @@
+{
+  "workbench.colorCustomizations": {
+    "[Omni]": {
+      "tab.activeBackground": "#050011",
+      "tab.activeForeground": "#ffffff",
+      "tab.activeBorderTop": "#f38e00"
+    },
+    "activityBar.background": "#1B3407",
+    "titleBar.activeBackground": "#25490A",
+    "titleBar.activeForeground": "#F5FDEE"
+  }
+}

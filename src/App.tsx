@@ -1,6 +1,6 @@
 import Xarrow, { Xwrapper } from "react-xarrows";
 
-import { useRef, useState } from "react";
+import React, { useCallback, useState } from "react";
 import "./App.css";
 
 /*
@@ -26,20 +26,40 @@ import "./App.css";
 
   */
 
-// interface BoxNode {
-//   id: string;
-//   left: number;
-//   top: number;
-//   links: string[];
-// }
+const initialBoxes = [
+  {
+    id: "box1",
+    left: 100,
+    top: 100,
+    links: ["box2"],
+  },
+  {
+    id: "box2",
+    left: 300,
+    top: 200,
+    links: [],
+  },
+];
 
-const Box = (box: any) => {
-  const Style = {
+interface BoxNode {
+  id: string;
+  left: number;
+  top: number;
+  links: string[];
+}
+
+interface BoxProps {
+  box: BoxNode;
+}
+
+const Box = ({ box }: BoxProps) => {
+  const Style: React.CSSProperties = {
     position: "absolute",
     border: "grey solid 2px",
     borderRadius: "10px",
     padding: "5px",
-    ...box,
+    left: box.left,
+    top: box.top,
   };
 
   return (
@@ -50,54 +70,44 @@ const Box = (box: any) => {
 };
 
 function App() {
-  const [boxes, setBoxes] = useState([
-    {
-      id: "box1",
-      left: 100,
-      top: 100,
-      links: ["box2"],
+  const [boxes, setBoxes] = useState(initialBoxes);
+
+  const handleClickOInCanvas = useCallback(
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      const newBox = {
+        id: `box${boxes.length + 1}`,
+        left: e.pageX,
+        top: e.pageY,
+        links: [],
+      };
+
+      const allBoxes = [...boxes, newBox];
+
+      const updateBoxes = allBoxes.map((b, i) => {
+        const nextBox = allBoxes[i + 1];
+
+        return {
+          ...b,
+          links: nextBox ? [nextBox.id] : [],
+        };
+      });
+
+      setBoxes(updateBoxes);
     },
-    {
-      id: "box2",
-      left: 300,
-      top: 200,
-      links: [],
-    },
-  ]);
-  const canvasRef = useRef<HTMLDivElement | null>(null);
-
-  function handleClickOInCanvas(
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ) {
-    if (!canvasRef.current) return;
-
-    console.log(`boxes: `, boxes);
-
-    const newBox = {
-      id: `box${boxes.length + 1}`,
-      left: e.pageX,
-      top: e.pageY,
-      links: [`box${boxes.length}`],
-    };
-
-    const updated = [...boxes, newBox].filter((item) => item);
-
-    setBoxes((prev) => [...prev, newBox]);
-  }
+    [boxes]
+  );
 
   return (
-    <div id="canvas" ref={canvasRef} onClick={handleClickOInCanvas}>
+    <div id="canvas" onClick={handleClickOInCanvas}>
       <Xwrapper>
-        {boxes.map((b, index) => (
-          <Box {...b} key={index} />
+        {boxes.map((box) => (
+          <React.Fragment key={box.id}>
+            <Box box={box} />
+            {box.links.map((link) => (
+              <Xarrow key={box.id} start={box.id} end={link} />
+            ))}
+          </React.Fragment>
         ))}
-        {boxes.map((b) =>
-          b.links.length
-            ? b.links.map((l, i) => (
-                <Xarrow key={b.id + "-" + i} start={b.id} end={l} />
-              ))
-            : null
-        )}
       </Xwrapper>
     </div>
   );

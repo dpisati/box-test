@@ -83,16 +83,16 @@ function App() {
 
       const allBoxes = [...boxes, newBox];
 
-      const updateBoxes = allBoxes.map((b, i) => {
-        const nextBox = allBoxes[i + 1];
+      const updatedBoxes = allBoxes.map((box, index) => {
+        const nextBox = allBoxes[index + 1];
 
         return {
-          ...b,
+          ...box,
           links: nextBox ? [nextBox.id] : [],
         };
       });
 
-      setBoxes(updateBoxes);
+      setBoxes(updatedBoxes);
     },
     [boxes]
   );

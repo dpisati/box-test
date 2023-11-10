@@ -26,7 +26,7 @@ import "./App.css";
 
   */
 
-const initialBoxes = [
+const initialBoxes: BoxNode[] = [
   {
     id: "box1",
     left: 100,

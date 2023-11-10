@@ -70,7 +70,7 @@ const Box = ({ box }: BoxProps) => {
 };
 
 function App() {
-  const [boxes, setBoxes] = useState(initialBoxes);
+  const [boxes, setBoxes] = useState<BoxNode[]>(initialBoxes);
 
   const handleClickOInCanvas = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
